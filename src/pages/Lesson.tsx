@@ -77,9 +77,9 @@ export function Lesson() {
   const nextLesson = course.lessons[lessonIndex + 1];
 
   return (
-    <div className="flex h-screen bg-zinc-950 text-zinc-100 overflow-hidden">
+    <div className="flex flex-col md:flex-row h-screen bg-zinc-950 text-zinc-100 overflow-hidden">
       {/* Left Panel: Content */}
-      <div className="w-1/3 border-r border-zinc-800 flex flex-col bg-zinc-950">
+      <div className="w-full md:w-1/3 h-[40vh] md:h-full border-b md:border-b-0 md:border-r border-zinc-800 flex flex-col bg-zinc-950">
         <div className="p-4 border-b border-zinc-800 flex items-center gap-4">
           <button 
             onClick={() => navigate('/courses')}
@@ -97,36 +97,36 @@ export function Lesson() {
           <ReactMarkdown>{lesson.content}</ReactMarkdown>
         </div>
 
-        <div className="p-6 bg-zinc-900/50 border-t border-zinc-800">
-          <div className="flex items-center justify-between mb-4">
+        <div className="p-4 md:p-6 bg-zinc-900/50 border-t border-zinc-800 shrink-0">
+          <div className="flex items-center justify-between mb-2 md:mb-4">
             <h3 className="font-bold text-sm text-zinc-400 uppercase">Objetivo</h3>
           </div>
-          <p className="text-sm font-medium text-indigo-300 bg-indigo-500/10 p-4 rounded-xl border border-indigo-500/20">
+          <p className="text-sm font-medium text-indigo-300 bg-indigo-500/10 p-3 md:p-4 rounded-xl border border-indigo-500/20">
             {lesson.objective}
           </p>
         </div>
       </div>
 
       {/* Right Panel: Editor & Feedback */}
-      <div className="flex-1 flex flex-col relative">
-        <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-zinc-900">
+      <div className="flex-1 h-[60vh] md:h-full flex flex-col relative">
+        <div className="flex items-center justify-between p-3 md:p-4 border-b border-zinc-800 bg-zinc-900">
           <div className="flex items-center gap-2">
             <div className="px-3 py-1 bg-zinc-800 rounded-md text-xs font-mono text-zinc-400">
               main.{lesson.language === 'python' ? 'py' : 'js'}
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <button
               onClick={() => setIsChatOpen(!isChatOpen)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors"
+              className="flex items-center gap-2 px-3 md:px-4 py-2 rounded-lg font-medium text-xs md:text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-300 transition-colors"
             >
               <MessageSquare className="w-4 h-4" />
-              Tutor IA
+              <span className="hidden sm:inline">Tutor IA</span>
             </button>
             <button
               onClick={handleRunCode}
               disabled={isEvaluating}
-              className="flex items-center gap-2 px-6 py-2 rounded-lg font-bold text-sm bg-emerald-500 hover:bg-emerald-600 text-white transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 md:px-6 py-2 rounded-lg font-bold text-xs md:text-sm bg-emerald-500 hover:bg-emerald-600 text-white transition-colors disabled:opacity-50"
             >
               {isEvaluating ? (
                 <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
@@ -135,7 +135,7 @@ export function Lesson() {
               ) : (
                 <Play className="w-4 h-4 fill-current" />
               )}
-              {isEvaluating ? 'Analisando...' : 'Executar Código'}
+              {isEvaluating ? 'Analisando...' : <span className="hidden sm:inline">Executar Código</span>}
             </button>
           </div>
         </div>
@@ -149,7 +149,7 @@ export function Lesson() {
             className="min-h-full outline-none"
             style={{
               fontFamily: '"JetBrains Mono", "Fira Code", monospace',
-              fontSize: 15,
+              fontSize: 14,
               lineHeight: 1.6,
             }}
           />
@@ -163,33 +163,33 @@ export function Lesson() {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               className={cn(
-                "absolute bottom-0 left-0 right-0 p-6 border-t shadow-2xl backdrop-blur-xl",
+                "absolute bottom-0 left-0 right-0 p-4 md:p-6 border-t shadow-2xl backdrop-blur-xl z-10",
                 feedback.status === 'success' 
-                  ? "bg-emerald-950/90 border-emerald-500/30" 
-                  : "bg-rose-950/90 border-rose-500/30"
+                  ? "bg-emerald-950/95 border-emerald-500/30" 
+                  : "bg-rose-950/95 border-rose-500/30"
               )}
             >
-              <div className="max-w-4xl mx-auto flex items-start gap-4">
+              <div className="max-w-4xl mx-auto flex items-start gap-3 md:gap-4">
                 {feedback.status === 'success' ? (
-                  <CheckCircle2 className="w-8 h-8 text-emerald-400 shrink-0 mt-1" />
+                  <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-emerald-400 shrink-0 mt-1" />
                 ) : (
-                  <XCircle className="w-8 h-8 text-rose-400 shrink-0 mt-1" />
+                  <XCircle className="w-6 h-6 md:w-8 md:h-8 text-rose-400 shrink-0 mt-1" />
                 )}
                 <div className="flex-1">
                   <h3 className={cn(
-                    "text-xl font-bold mb-2",
+                    "text-lg md:text-xl font-bold mb-1 md:mb-2",
                     feedback.status === 'success' ? "text-emerald-400" : "text-rose-400"
                   )}>
                     {feedback.status === 'success' ? 'Excelente trabalho!' : 'Ops, quase lá!'}
                   </h3>
-                  <p className="text-zinc-200 text-lg leading-relaxed">
+                  <p className="text-zinc-200 text-sm md:text-lg leading-relaxed">
                     {feedback.message}
                   </p>
                   
                   {feedback.status === 'success' && nextLesson && (
                     <button
                       onClick={() => navigate(`/lesson/${course.id}/${nextLesson.id}`)}
-                      className="mt-6 flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl transition-colors"
+                      className="mt-4 md:mt-6 flex items-center justify-center w-full md:w-auto gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl transition-colors"
                     >
                       Próxima Lição
                       <ArrowRight className="w-5 h-5" />
@@ -198,7 +198,7 @@ export function Lesson() {
                   {feedback.status === 'success' && !nextLesson && (
                     <button
                       onClick={() => navigate(`/courses`)}
-                      className="mt-6 flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl transition-colors"
+                      className="mt-4 md:mt-6 flex items-center justify-center w-full md:w-auto gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold rounded-xl transition-colors"
                     >
                       Concluir Curso
                       <Trophy className="w-5 h-5" />
@@ -207,7 +207,7 @@ export function Lesson() {
                 </div>
                 <button 
                   onClick={() => setFeedback(null)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-1.5 md:p-2 hover:bg-white/10 rounded-lg transition-colors shrink-0"
                 >
                   <XCircle className="w-5 h-5 text-zinc-400" />
                 </button>
@@ -220,17 +220,17 @@ export function Lesson() {
         <AnimatePresence>
           {isChatOpen && (
             <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="absolute top-4 right-4 bottom-4 w-96 bg-zinc-900 border border-zinc-700 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-20"
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95 }}
+              className="absolute top-0 md:top-4 right-0 md:right-4 bottom-0 md:bottom-4 w-full md:w-96 bg-zinc-900 md:border border-zinc-700 md:rounded-2xl shadow-2xl flex flex-col overflow-hidden z-20"
             >
-              <div className="p-4 bg-indigo-600 flex items-center justify-between">
+              <div className="p-4 bg-indigo-600 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-2 text-white font-bold">
                   <Sparkles className="w-5 h-5" />
                   Tutor IA
                 </div>
-                <button onClick={() => setIsChatOpen(false)} className="text-white/70 hover:text-white">
+                <button onClick={() => setIsChatOpen(false)} className="text-white/70 hover:text-white p-1">
                   <XCircle className="w-5 h-5" />
                 </button>
               </div>
@@ -239,7 +239,7 @@ export function Lesson() {
                 {chatMessages.length === 0 && (
                   <div className="text-center text-zinc-500 mt-10">
                     <Sparkles className="w-8 h-8 mx-auto mb-3 opacity-50" />
-                    <p>Estou aqui para ajudar! Tem alguma dúvida sobre o código ou o conceito?</p>
+                    <p className="text-sm">Estou aqui para ajudar! Tem alguma dúvida sobre o código ou o conceito?</p>
                   </div>
                 )}
                 {chatMessages.map((msg, i) => (
@@ -262,13 +262,13 @@ export function Lesson() {
                 )}
               </div>
 
-              <form onSubmit={handleAskTutor} className="p-3 border-t border-zinc-800 bg-zinc-950">
+              <form onSubmit={handleAskTutor} className="p-3 border-t border-zinc-800 bg-zinc-950 shrink-0">
                 <input
                   type="text"
                   value={chatInput}
                   onChange={e => setChatInput(e.target.value)}
                   placeholder="Pergunte algo..."
-                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-indigo-500 transition-colors"
                 />
               </form>
             </motion.div>

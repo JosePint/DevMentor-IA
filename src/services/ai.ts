@@ -1,7 +1,20 @@
 import { GoogleGenAI } from '@google/genai';
 
-// Initialize the Gemini AI client
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+let aiInstance: GoogleGenAI | null = null;
+
+function getAI(): GoogleGenAI {
+  if (!aiInstance) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY is missing. AI features will not work.");
+      // We still initialize it so it doesn't crash the app, but API calls will fail
+      aiInstance = new GoogleGenAI({ apiKey: 'missing_key' });
+    } else {
+      aiInstance = new GoogleGenAI({ apiKey });
+    }
+  }
+  return aiInstance;
+}
 
 export interface EvaluationResult {
   status: 'success' | 'error';
@@ -41,7 +54,7 @@ Responda com um JSON contendo:
 
 IMPORTANTE: Retorne APENAS um objeto JSON válido, sem formatação markdown em volta, sem crases. Apenas o JSON puro.`;
 
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
       config: {
@@ -74,7 +87,7 @@ Pergunta do aluno: "${question}"
 
 Responda de forma clara, didática, em português do Brasil. Use markdown para formatar código se necessário. Seja conciso, não escreva um texto gigante.`;
 
-    const response = await ai.models.generateContent({
+    const response = await getAI().models.generateContent({
       model: 'gemini-3-flash-preview',
       contents: prompt,
     });
